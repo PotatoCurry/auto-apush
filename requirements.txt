@@ -1,3 +1,4 @@
+tqdm==4.38.0
 summa==1.2.0
 fuzzywuzzy==0.17.0
 lxml==4.4.1

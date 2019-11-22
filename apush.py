@@ -2,10 +2,10 @@ import argparse
 import logging
 
 import docx
+from summa.summarizer import summarize
+from tqdm import tqdm
 
 import scraper
-
-from summa.summarizer import summarize
 
 parser = argparse.ArgumentParser()
 parser.add_argument('outline', help='Outline Document')
@@ -24,7 +24,7 @@ section_number = 1
 output_doc = docx.Document()
 
 # Outline content begins at paragraph 13
-for para in outline_doc.paragraphs[13:-1]:
+for para in tqdm(outline_doc.paragraphs[13:-1]):
     section = para.text.strip()
     if para.runs[0].bold:
         logging.debug("Read heading", section)
