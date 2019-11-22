@@ -38,4 +38,6 @@ for para in tqdm(outline_doc.paragraphs[13:-1]):
         section_number += 1
 
 scraper.close()
-output_doc.save(args.outline[:-5] + "_Complete.docx")
+output_filename = args.outline[:-5] + "_Complete.docx"
+output_doc.save(output_filename)
+print("Saved completed outline as", output_filename)
