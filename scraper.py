@@ -1,3 +1,4 @@
+import logging
 from typing import Optional, List
 
 from fuzzywuzzy import fuzz
@@ -16,30 +17,30 @@ class Scraper:
         driver = self.driver
         driver.get("https://connect.mheducation.com/connect/login/index.htm")
         assert "McGraw-Hill Connect" in driver.title
-        print("Opened page")
+        logging.debug("Opened page")
 
         username_field = driver.find_element_by_id('userName')
         password_field = driver.find_element_by_id('password')
         username_field.send_keys(username)
         password_field.send_keys(password, Keys.ENTER)  # TODO: Change to button click
         assert "McGraw-Hill Connect | My Courses" in driver.title
-        print("Logged in")
+        logging.debug("Logged in")
 
         wait = WebDriverWait(driver, 5)
         apush_course = wait.until(expected_conditions.element_to_be_clickable(
             (By.LINK_TEXT, "CHS APUSH")))
         apush_course.click()
         assert "McGraw-Hill Connect | Section Home" in driver.title
-        print("Navigated to course")
+        logging.debug("Navigated to course")
         apush_book = wait.until(expected_conditions.element_to_be_clickable(
             (By.LINK_TEXT, "American History: Connecting with the Past - AP")))
         apush_book.click()
         assert "McGraw-Hill Connect - Ebook" in driver.title
-        print("Navigated to book")
+        logging.debug("Navigated to book")
 
         driver.switch_to.frame('ebookframe')
 
-    def summary(self, section: str) -> str:
+    def section_body(self, section: str) -> str:
         page_start = section.index('(')
         title = section[:page_start - 1]
         page = int(section[page_start + 4:-1])
