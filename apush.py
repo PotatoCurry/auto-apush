@@ -1,5 +1,4 @@
 import docx
-from docx import Document
 from gooey import Gooey, GooeyParser
 from summa.summarizer import summarize
 
@@ -19,7 +18,7 @@ def main():
     parser.add_argument("Summarization", widget='Dropdown', choices=['Full', '75%', '50%', '25%'])
     args = parser.parse_args()
 
-    outline_doc: Document = docx.Document(args.Outline)
+    outline_doc = docx.Document(args.Outline)
     scraper = Scraper(args.Username, args.Password)
     summarization_factors = {'Full': 1.0, '75%': 0.75, '50%': 0.5, '25%': 0.25}
     summarization_factor = summarization_factors[args.Summarization]
