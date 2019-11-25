@@ -18,10 +18,11 @@ def main():
     parser.add_argument("Summarization", widget='Dropdown', choices=['Full', '75%', '50%', '25%'])
     args = parser.parse_args()
 
-    outline_doc = docx.Document(args.Outline)
-    scraper = Scraper(args.Username, args.Password)
     summarization_factors = {'Full': 1.0, '75%': 0.75, '50%': 0.5, '25%': 0.25}
     summarization_factor = summarization_factors[args.Summarization]
+    outline_doc = docx.Document(args.Outline)
+    print("Opened", args.Outline, flush=True)
+    scraper = Scraper(args.Username, args.Password)
 
     section_number = 1
     output_doc = docx.Document()
@@ -37,18 +38,18 @@ def main():
         else:
             content = scraper.section_body(section)
             if content is None:
-                print("Unable to extract body of", section)
+                print("Unable to extract body of", section, flush=True)
             else:
                 content = summarize(content, summarization_factor, split=True)
                 output_doc.add_paragraph(str(section_number) + ". " + section + ": " + ' '.join(content))
-            print("Processed", section)
-            print(str(section_number) + '/' + str(total_sections))
+            print("Processed", section, flush=True)
+            print(str(section_number) + '/' + str(total_sections), flush=True)
             section_number += 1
 
     scraper.close()
     output_filename = args.Outline[:-5] + "_Complete.docx"
     output_doc.save(output_filename)
-    print("Saved completed outline as", output_filename)
+    print("Saved completed outline as", output_filename, flush=True)
 
 
 main()

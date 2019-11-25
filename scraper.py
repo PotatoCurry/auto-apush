@@ -1,8 +1,8 @@
-import logging
 from typing import Optional, List
 
 from fuzzywuzzy import fuzz
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions
@@ -10,33 +10,34 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Scraper:
-    # TODO: Make Chrome headless unless in debug mode
-    driver = webdriver.Chrome()
+    options = Options()
+    options.headless = True  # TODO: Implement headless option in GUI
+    driver = webdriver.Chrome(options=options)
 
     def __init__(self, username: str, password: str):
         driver = self.driver
         driver.get("https://connect.mheducation.com/connect/login/index.htm")
         assert "McGraw-Hill Connect" in driver.title
-        logging.debug("Opened page")
+        print("Opened textbook website", flush=True)
 
         username_field = driver.find_element_by_id('userName')
         password_field = driver.find_element_by_id('password')
         username_field.send_keys(username)
         password_field.send_keys(password, Keys.ENTER)  # TODO: Change to button click
         assert "McGraw-Hill Connect | My Courses" in driver.title
-        logging.debug("Logged in")
+        print("Logged in", flush=True)
 
         wait = WebDriverWait(driver, 5)
         apush_course = wait.until(expected_conditions.element_to_be_clickable(
             (By.LINK_TEXT, "CHS APUSH")))
         apush_course.click()
         assert "McGraw-Hill Connect | Section Home" in driver.title
-        logging.debug("Navigated to course")
+        print("Navigated to course", flush=True)
         apush_book = wait.until(expected_conditions.element_to_be_clickable(
             (By.LINK_TEXT, "American History: Connecting with the Past - AP")))
         apush_book.click()
         assert "McGraw-Hill Connect - Ebook" in driver.title
-        logging.debug("Navigated to book")
+        print("Navigated to book", flush=True)
 
         driver.switch_to.frame('ebookframe')
 
@@ -67,17 +68,13 @@ class Scraper:
             if fuzz.ratio(heading.casefold(), title.casefold()) > 90:
                 xpath = "//" + heading_div.tag_name + "[@id='" + heading_div.get_attribute('id') + "']/following-sibling::*"
                 following_divs = heading_div.find_elements_by_xpath(xpath)
-                # print(following_divs)
                 paragraphs: List[str] = list()
                 for div in following_divs:
                     if div.tag_name == 'p':
-                        # print("added", div.text)
                         paragraphs.append(div.text)
                     elif fuzz.ratio(div.text.casefold(), heading.casefold()) > 90:
                         pass
-                        # print("passed duplicate heading")
                     else:
-                        # print("broke")
                         break
                 return ' '.join(paragraphs)
         return None
