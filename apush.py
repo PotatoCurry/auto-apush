@@ -52,4 +52,5 @@ def main():
     print("Saved completed outline as", output_filename, flush=True)
 
 
-main()
+if __name__ == '__main__':
+    main()
