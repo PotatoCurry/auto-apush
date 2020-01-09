@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Scraper:
     options = Options()
-    options.headless = True  # TODO: Implement headless option in GUI
+    options.headless = False  # TODO: Implement headless option in GUI
     driver = webdriver.Chrome(options=options)
 
     def __init__(self, username: str, password: str):
@@ -31,10 +31,10 @@ class Scraper:
         apush_course = wait.until(expected_conditions.element_to_be_clickable(
             (By.LINK_TEXT, "CHS APUSH")))
         apush_course.click()
-        assert "McGraw-Hill Connect | Section Home" in driver.title
-        print("Navigated to course", flush=True)
         apush_book = wait.until(expected_conditions.element_to_be_clickable(
             (By.LINK_TEXT, "American History: Connecting with the Past - AP")))
+        assert "McGraw-Hill Connect | Section Home" in driver.title
+        print("Navigated to course", flush=True)
         apush_book.click()
         assert "McGraw-Hill Connect - Ebook" in driver.title
         print("Navigated to book", flush=True)
