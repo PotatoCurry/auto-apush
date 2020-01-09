@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Scraper:
     options = Options()
-    options.headless = False  # TODO: Implement headless option in GUI
+    options.headless = True  # TODO: Implement headless option in GUI
     driver = webdriver.Chrome(options=options)
 
     def __init__(self, username: str, password: str):
