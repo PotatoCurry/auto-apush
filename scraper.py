@@ -23,7 +23,7 @@ class Scraper:
         username_field = driver.find_element_by_id('userName')
         password_field = driver.find_element_by_id('password')
         username_field.send_keys(username)
-        password_field.send_keys(password, Keys.ENTER)  # TODO: Change to button click
+        password_field.send_keys(password, Keys.ENTER)
         assert "McGraw-Hill Connect | My Courses" in driver.title
         print("Logged in", flush=True)
 
@@ -53,7 +53,7 @@ class Scraper:
             if body is None:
                 turns += 1
             else:
-                return body  # TODO: Return summarized body
+                return body
         # TODO: Check end of chapter glossary
 
     def find_body(self, title) -> Optional[str]:
